@@ -92,11 +92,11 @@ class Model:
 
     if self.weight_decay > 0:
       weight_decay = tf.constant(self.weight_decay, dtype=tf.float32, name="weight_constant")
-      self.regularizer = tf.contrib.layers.l2_regularizer(scale=weight_decay)
+      self.regularizer = tf.keras.regularizers.l2(scale=weight_decay)
     else:
       self.regularizer = None
 
-    self.initializer = tf.contrib.layers.xavier_initializer()
+    self.initializer = tf.keras.initializers.glorot_uniform()
 
     # down sample layers
     convs = [None] * self.depths # store output of each depth

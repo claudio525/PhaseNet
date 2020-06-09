@@ -24,6 +24,37 @@ class Config():
   Y_shape = [3000, 1, n_class]
   min_event_gap = 3 * sampling_rate
 
+  def set_config(self, config_dict):
+    self.X_shape = config_dict["X_shape"]
+    self.n_channel = self.X_shape[-1]
+    self.Y_shape = config_dict["Y_shape"]
+    self.n_class = self.Y_shape[-1]
+
+    self.depths = config_dict["depth"]
+    self.filters_root = config_dict["filters_root"]
+    self.kernel_size = config_dict["kernel_size"]
+    self.pool_size = config_dict["pool_size"]
+    self.dilation_rate = config_dict["dilation_rate"]
+    self.batch_size = config_dict["batch_size"]
+    self.class_weights = config_dict["class_weights"]
+    self.loss_type = config_dict["loss_type"]
+    self.weight_decay = config_dict["weight_decay"]
+    self.optimizer = config_dict["optimizer"]
+
+    self.learning_rate = config_dict["learning_rate"]
+    # Hmh??
+    # if (config_dict["decay_step"] == -1) and (config_dict["mode"] == 'train'):
+    #   self.decay_step = data_reader.num_data // config_dictbatch_size
+    # else:
+    self.decay_step = config_dict["decay_step"]
+    self.decay_rate = config_dict["decay_rate"]
+    self.momentum = config_dict["momentum"]
+
+    self.summary = config_dict["summary"]
+    self.drop_rate = config_dict["drop_rate"]
+
+    return self
+
 
 class DataReader(object):
 
@@ -307,6 +338,7 @@ class DataReader_pred(DataReader):
         sample[np.isnan(sample)] = 0
         sample[np.isinf(sample)] = 0
 
+      print(sample.shape)
       sample = self.normalize(sample)
       sample = self.adjust_missingchannels(sample)
       sess.run(self.enqueue, feed_dict={self.sample_placeholder: sample,
@@ -365,7 +397,7 @@ class DataReader_mseed(DataReader):
     meta = meta.trim(min([st.stats.starttime for st in meta]), 
                      max([st.stats.endtime for st in meta]), 
                      pad=True, fill_value=0)
-    nt = len(meta[0].data)
+    nt = len(meta[0].input_data)
 
     ## can test small sampling rate for longer distance
     # meta = meta.interpolate(sampling_rate=100)
@@ -374,7 +406,7 @@ class DataReader_mseed(DataReader):
     for i, ch in enumerate(channels):
       tmp = meta.select(channel=ch)
       if len(tmp) == 1:
-        data[i] = tmp[0].data
+        data[i] = tmp[0].input_data
       elif len(tmp) == 0:
         print(f"Warning: Missing channel \"{ch}\" in {meta}")
         data[i] = np.zeros(nt)
