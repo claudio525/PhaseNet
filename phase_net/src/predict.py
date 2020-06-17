@@ -1,6 +1,7 @@
 import logging
+from typing import Dict
+
 import numpy as np
-import pandas as pd
 
 import tensorflow.compat.v1 as tf
 
@@ -31,7 +32,30 @@ DEFAULT_CONFIG_DICT = {
 }
 
 
-def pred(input_data: np.ndarray, model_dir, config_dict=None):
+def predict(input_data: np.ndarray, model_dir: str, config_dict=None):
+    """Functions that runs p & s wave estimation
+    using the PhaseNet model
+
+    Parameters
+    ----------
+    input_data: numpy array of floats
+        The acceleration series data, supports multiple
+        reocrds (first axis), each with the same number
+        of timesteps and 3 channels (2 horizontal + vertical)
+        Shape: [n_records, n_timesteps, 3]
+    model_dir: str
+        Path the model directory, i.e. /model/190703-214543
+    config_dict: dictionary, optional
+        config dictionary, mainly useful for
+        adjusting acceleration series length,
+        i.e. updating X_shape
+
+    Returns
+    -------
+    numpy array of floats:
+        The noise, p & s wave probabilities at each timestep
+        Shape: [n_records, n_timesteps, 3]
+    """
     assert len(input_data.shape) == 3
 
     if config_dict is None:

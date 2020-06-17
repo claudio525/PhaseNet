@@ -1,4 +1,15 @@
+## Modifications
 
+- Converted to package for easy usage
+- Added predict.py, which contains the predict function that allows running the PhaseNet model from code, 
+instead of having to save the data in the correct format and then running run.py script.
+
+Install with:
+`pip install -e ./phase_net` from the directory in which the repo was cloned.
+
+---
+
+# Original README
 
 ## 1. Install
 
