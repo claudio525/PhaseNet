@@ -41,13 +41,12 @@ def pred(input_data: np.ndarray, model_dir, config_dict=None):
     config_dict["X_shape"] = config_dict["Y_shape"] = input_data.shape[1:]
     # input_data = np.transpose(input_data, axes=(1, 0, 2))
 
-    # Normalize
-    input_data = (input_data - np.mean(input_data, axis=1)) / np.std(input_data, axis=1)
+    # Normalize each channel of each record
+    input_data = (input_data - np.mean(input_data, axis=1, keepdims=True)) / np.std(input_data, axis=1, keepdims=True)
 
     # Adjust missing channels ??
     channel_max = np.max(np.abs(input_data), axis=1, keepdims=True)
-    if np.count_nonzero(channel_max) > 0:
-      input_data *= input_data.shape[-1] / np.count_nonzero(channel_max)
+    input_data *= input_data.shape[-1] / np.count_nonzero(channel_max, axis=-1)[..., np.newaxis]
 
     config = Config()
     config.set_config(config_dict)
@@ -75,6 +74,4 @@ def pred(input_data: np.ndarray, model_dir, config_dict=None):
             },
         )
 
-        print("wtf")
-
-    return None
+    return pred_batch[:, :, 0, :]
