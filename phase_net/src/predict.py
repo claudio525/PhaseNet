@@ -6,14 +6,6 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 
-import tensorflow.compat.v1 as tf
-
-tf.disable_v2_behavior()
-
-import tensorflow.python.util.deprecation as deprecation
-
-deprecation._PRINT_DEPRECATION_WARNINGS = False
-
 from .model import Model
 from .data_reader import Config
 
@@ -69,6 +61,11 @@ def predict(input_data: np.ndarray, model_dir: str = None, config_dict: Dict = N
         The noise, p & s wave probabilities at each timestep
         Shape: [n_records, n_timesteps, 3]
     """
+    import tensorflow.compat.v1 as tf
+    import tensorflow.python.util.deprecation as deprecation
+    tf.disable_v2_behavior()
+    deprecation._PRINT_DEPRECATION_WARNINGS = False
+
     assert len(input_data.shape) == 3
 
     config_dict = config_dict if config_dict is not None else DEFAULT_CONFIG_DICT
@@ -117,6 +114,8 @@ def predict(input_data: np.ndarray, model_dir: str = None, config_dict: Dict = N
             },
         )
 
+    tf.enable_v2_behavior()
+    deprecation._PRINT_DEPRECATION_WARNINGS = True
     return pred_batch[:, :, 0, :]
 
 
