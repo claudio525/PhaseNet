@@ -114,8 +114,6 @@ def predict(input_data: np.ndarray, model_dir: str = None, config_dict: Dict = N
             },
         )
 
-    tf.enable_v2_behavior()
-    deprecation._PRINT_DEPRECATION_WARNINGS = True
     return pred_batch[:, :, 0, :]
 
 

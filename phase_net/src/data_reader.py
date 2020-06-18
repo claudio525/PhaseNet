@@ -8,7 +8,6 @@ import pandas as pd
 pd.options.mode.chained_assignment = None
 
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
 
 from tqdm import tqdm
 

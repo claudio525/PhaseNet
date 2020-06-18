@@ -2,7 +2,6 @@ import logging
 
 import numpy as np
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
 
 def crop_and_concat(net1, net2):
   """
